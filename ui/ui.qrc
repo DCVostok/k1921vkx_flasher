@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>flasher.png</file>
+        <file>lock.png</file>
+        <file>unlock.png</file>
+        <file>update.png</file>
+    </qresource>
+</RCC>

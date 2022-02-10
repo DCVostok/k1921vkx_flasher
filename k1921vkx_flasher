@@ -1,0 +1,4 @@
+#!/bin/sh
+
+curdir="${0%/*}"
+python3 "$curdir"/k1921vkx_flasher.py
