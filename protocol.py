@@ -67,7 +67,8 @@ class Packet:
         self.cmd_code = CmdCode["NONE"]
         self.data8_n = 0
         self.data = []
-
+    
+    
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
@@ -139,18 +140,20 @@ class TxPacket(Packet):
 
 
 class RxPacket(Packet):
-    def __init__(self, mcu, serport, win=None):
+    def __init__(self, mcu, serport, win=None,cur_flash=0,cur_region='region_main'):
         super().__init__(mcu, serport, win)
         self.device_sign = SignCode["DEVICE"]
         self.rxcmd_code = CmdCode["NONE"]
         self.msg_code = MsgCode["NONE"]
+        self.cur_flash = cur_flash
+        self.cur_region = cur_region
 
     def msg_err_crc(self):
         self.log_dbg(LogId["DEVICE"] + "%s - ERR_CRC - CRC error in HOST command!" % dict_key(CmdCode, self.rxcmd_code))
-        raise ProtException("Ошибка CRC в команде от хоста!", self.win)
+        raise ProtException("ERR_CRC - CRC error in HOST command!", self.win)
 
     def parse_msg(self):
-        flash_page_size = self.mcu.flash[self.win.get_curr_flash()][self.win.get_curr_region()].page_size
+        flash_page_size = self.mcu.flash[self.cur_flash][self.cur_region].page_size
         info = {}
         self.msg_code = self.data[0]
         self.rxcmd_code = self.data[1]
@@ -160,9 +163,9 @@ class RxPacket(Packet):
         if (self.rxcmd_code == CmdCode["NONE"]):
             if (self.msg_code == MsgCode["ERR_CMD"]):
                 self.log_dbg(LogId["DEVICE"] + "ERR_CMD - wrong command from HOST!")
-                raise ProtException("Принята некорректная команда от хоста!", self.win)
+                raise ProtException("ERR_CMD - wrong command from HOST!", self.win)
             elif (self.msg_code == MsgCode["READY"]):
-                result = "Устройство ответило о готовности"
+                result = "Device ask ready"
                 self.log_info(LogId["PROG"] + "%s" % result)
                 self.log_dbg(LogId["DEVICE"] + "READY - %s" % result)
 
@@ -190,7 +193,7 @@ class RxPacket(Packet):
                 self.log_info(LogId["PROG"] + "%s" % info["res_str"])
                 self.log_dbg(LogId["DEVICE"] + "GET_CFGWORD - OK | %s" % info["res_str"])
             elif (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["SET_CFGWORD"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -199,7 +202,7 @@ class RxPacket(Packet):
                 info.update(self.mcu.parse_cfgword(self.data[4:]))
                 self.log_dbg(LogId["DEVICE"] + "SET_CFGWORD - OK | %s" % info["res_str"])
             elif (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["WRITE_PAGE"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -210,7 +213,7 @@ class RxPacket(Packet):
                              (dict_key(MsgCode, self.msg_code),
                              ((temp >> 31) & 0x1), ((temp >> 29) & 0x1), ((temp >> 30) & 0x1), (temp & 0x3FFFFFFF), (temp & 0x3FFFFFFF) // flash_page_size))
                 if (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["READ_PAGE"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -222,7 +225,7 @@ class RxPacket(Packet):
                              (dict_key(MsgCode, self.msg_code),
                              ((temp >> 31) & 0x1), ((temp >> 29) & 0x1), (temp & 0x7FFFFFFF), (temp & 0x7FFFFFFF) // flash_page_size))
                 if (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["ERASE_FULL"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -231,7 +234,7 @@ class RxPacket(Packet):
                 temp = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
                 self.log_dbg(LogId["DEVICE"] + "ERASE_FULL - %s | NVR=[%01d] FLASH=[%01d]" % (dict_key(MsgCode, self.msg_code), ((temp >> 31) & 0x1), ((temp >> 29) & 0x1)))
                 if (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["ERASE_PAGE"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -242,7 +245,7 @@ class RxPacket(Packet):
                              (dict_key(MsgCode, self.msg_code),
                              ((temp >> 31) & 0x1), ((temp >> 29) & 0x1), (temp & 0x7FFFFFFF), (temp & 0x7FFFFFFF) // flash_page_size))
                 if (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Устройство вернуло сообщение об ошибке!", self.win)
+                    raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["EXIT_BOOTLOADER"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
@@ -301,11 +304,12 @@ class RxPacket(Packet):
 
 
 class CmdInterface:
-    def __init__(self, mcu, serport, win=None):
+    def __init__(self, mcu, serport, win=None,cur_flash=0,cur_region="region_main"):
         self.mcu = mcu
         self.serport = serport
         self.win = win
-
+        self.cur_flash = cur_flash
+        self.cur_region = cur_region
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
@@ -325,7 +329,7 @@ class CmdInterface:
             print("ERR: %s" % msg)
 
     def reset_chip(self):
-        self.log_info(LogId["PROG"] + "Сброс микроконтроллера ...")
+        self.log_info(LogId["PROG"] + "Reset mcu ...")
         time.sleep(0.1)
         self.serport.dtr = True
         time.sleep(0.3)
@@ -333,9 +337,9 @@ class CmdInterface:
         time.sleep(0.1)
 
     def init_device(self):
-        self.log_info(LogId["PROG"] + "Подключение к устройству ...")
+        self.log_info(LogId["PROG"] + "Connecting ro target ...")
         # try RTS active 1
-        self.log_info(LogId["PROG"] + "Активация загрузчика: 1-ый вариант ....")
+        self.log_info(LogId["PROG"] + "Activate loader: variant 1 ....")
         self.serport.reset_input_buffer()
         self.serport.rts = False
         self.reset_chip()
@@ -343,10 +347,10 @@ class CmdInterface:
         ack = self.serport.read_int(2)
         self.log_info(LogId["DEVICE"] + "ack = 0x%04X" % ack)
         if (ack == ((((SignCode["DEVICE"]) >> 8) & 0x00FF) | (((SignCode["DEVICE"]) << 8) & 0xFF00))):
-            self.log_info(LogId["PROG"] + "Устройство подключено")
+            self.log_info(LogId["PROG"] + "Device connected")
         else:
             # try RTS active 0
-            self.log_info(LogId["PROG"] + "Активация загрузчика: 2-ой вариант ....")
+            self.log_info(LogId["PROG"] + "Activate loader: variant 2 ....")
             self.serport.reset_input_buffer()
             self.serport.rts = True
             self.reset_chip()
@@ -354,21 +358,21 @@ class CmdInterface:
             ack = self.serport.read_int(2)
             self.log_info(LogId["DEVICE"] + "ack = 0x%04X" % ack)
             if (ack == ((((SignCode["DEVICE"]) >> 8) & 0x00FF) | (((SignCode["DEVICE"]) << 8) & 0xFF00))):
-                self.log_info(LogId["PROG"] + "Устройство подключено")
+                 self.log_info(LogId["PROG"] + "Device connected")
             else:
-                raise ProtException("Неизвестный ответ от устройства", self.win)
+                raise ProtException("Unknown response from the device", self.win)
         self.serport.rts = not self.serport.rts
         rx_info = self.cmd_msg()
         if ((rx_info['cmd_code'] != CmdCode["NONE"]) or (rx_info['msg_code'] != MsgCode["READY"])):
-            raise ProtException("Получено неизвестное сообщение, когда ожидался ответ о готовности", self.win)
+            raise ProtException("Unknown READY response from the device", self.win)
 
     def release_device(self):
-        self.log_info(LogId["PROG"] + "Отключение от устройства ...")
+        self.log_info(LogId["PROG"] + "Disconnecting from target ...")
         self.serport.rts = not self.mcu.booten_active
         self.reset_chip()
 
     def cmd_get_info(self):
-        self.log_info(LogId["PROG"] + "Чтение идентификаторов устройства ...")
+        self.log_info(LogId["PROG"] + "Reading mcu info ...")
         packet = TxPacket(self.mcu, self.serport, self.win)
         packet.cmd_code = CmdCode["GET_INFO"]
         packet.data8_n = 0
@@ -377,7 +381,7 @@ class CmdInterface:
         return self.cmd_msg()
 
     def cmd_get_cfgword(self):
-        self.log_info(LogId["PROG"] + "Чтение CFGWORD ...")
+        self.log_info(LogId["PROG"] + "Reading CFGWORD ...")
         packet = TxPacket(self.mcu, self.serport, self.win)
         packet.cmd_code = CmdCode["GET_CFGWORD"]
         packet.data8_n = 0
@@ -386,7 +390,7 @@ class CmdInterface:
         return self.cmd_msg()
 
     def cmd_set_cfgword(self, cfgword):
-        self.log_info(LogId["PROG"] + "Запись CFGWORD ...")
+        self.log_info(LogId["PROG"] + "Writing CFGWORD ...")
         packet = TxPacket(self.mcu, self.serport, self.win)
         data, dbg_str = self.mcu.pack_cfgword(cfgword)
         packet.cmd_code = CmdCode["SET_CFGWORD"]
@@ -402,7 +406,7 @@ class CmdInterface:
         self.cmd_msg()
 
     def cmd_erase_page(self, page, flash, region):
-        self.log_info(LogId["PROG"] + "Стирание страницы %d ..." % page)
+        self.log_info(LogId["PROG"] + "Erasing page: %d ..." % page)
         page_size = self.mcu.flash[flash][region].page_size
         addr = page * page_size
         packet = TxPacket(self.mcu, self.serport, self.win)
@@ -418,7 +422,7 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_erase_full(self, flash, region):
-        self.log_info(LogId["PROG"] + "Стирание всей области памяти ...")
+        self.log_info(LogId["PROG"] + "Full erasing ...")
         packet = TxPacket(self.mcu, self.serport, self.win)
         packet.cmd_code = CmdCode["ERASE_FULL"]
         packet.data8_n = 4
@@ -431,7 +435,7 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_write_page(self, page, page_data, flash, region, erpages):
-        self.log_info(LogId["PROG"] + "Запись страницы %d ..." % page)
+        self.log_info(LogId["PROG"] + "Write page: %d ..." % page)
         page_size = self.mcu.flash[flash][region].page_size
         addr = page * page_size
         packet = TxPacket(self.mcu, self.serport, self.win)
@@ -449,7 +453,7 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_read_page(self, page, flash, region):
-        self.log_info(LogId["PROG"] + "Чтение страницы %d ..." % page)
+        self.log_info(LogId["PROG"] + "Read page: %d ..." % page)
         addr = page * self.mcu.flash[flash][region].page_size
         packet = TxPacket(self.mcu, self.serport, self.win)
         packet.flash_page_size = self.mcu.flash[flash][region].page_size
@@ -473,7 +477,7 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_msg(self):
-        packet = RxPacket(self.mcu, self.serport, self.win)
+        packet = RxPacket(self.mcu, self.serport, self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
         return packet.receive()
 
 
@@ -482,7 +486,11 @@ class Protocol:
         self.mcu = mcu.get_by_name('k1921vkx')
         self.serport = serport
         self.win = win
-
+        self.cur_flash = 0
+        self.cur_region = "region_main"
+    def pbar_set(self, state):
+        if self.win:
+            self.win.pbar_set(state)
     # -- Helpers --
     def log_dbg(self, msg):
         if self.win:
@@ -503,7 +511,7 @@ class Protocol:
             print("ERR: %s" % msg)
 
     def save_bin(self, name, data):
-        self.log_info("Сохранение %0d байт данных в файл %s" % (len(data), name))
+        self.log_info("Saving %0d data bytes to file %s" % (len(data), name))
         binfile = open(name, "wb")
         binfile.write(bytes(data))
         binfile.close()
@@ -517,99 +525,123 @@ class Protocol:
                 break
             data += [ord(current_byte)]
         binfile.close()
-        self.log_dbg("Прочитано %0d байт данных из файла %s" % (len(data), name))
+        self.log_dbg("Readed %0d data bytes from file %s" % (len(data), name))
         return data
 
     # -- API --
     def init(self, **kwargs):
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
         try:
             self.serport.open_port(port=kwargs['port'], baudrate=kwargs['baud'])
         except:
-            raise ProtException("Ошибка порта!", self.win)
+            raise ProtException("Couldn't open port %s"%(kwargs['port']), self.win)
         self.serport.reset_input_buffer()
-        self.win.pbar_set(25)
+        self.pbar_set(25)
         cmd.init_device()
-        self.win.pbar_set(50)
+        self.pbar_set(50)
         mcu_info = cmd.cmd_get_info()
         inited_mcu = mcu.get_by_chipid(mcu_info["chipid"])
         if inited_mcu is None:
-            raise ProtException("Неизвестный CHIPID!", self.win)
+            raise ProtException("Unknown CHIPID!", self.win)
         else:
             self.mcu = inited_mcu
             cmd.mcu = self.mcu
-        self.win.pbar_set(75)
+        self.pbar_set(75)
         mcu_cfgword = cmd.cmd_get_cfgword()
         self.mcu.apply_cfgword(mcu_cfgword)
         self.mcu.cpuid = mcu_info['cpuid']
         self.mcu.bootver = mcu_info['bootver']
-        self.log_info("Обнаружен %s с версией загрузчика v%s" % (self.mcu.name_ru, self.mcu.bootver))
-        self.win.pbar_set(100)
+        self.log_info("Detected %s with bootloader v%s" % (self.mcu.name_ru, self.mcu.bootver))
+        self.pbar_set(100)
         return self.mcu
 
     def deinit(self, **kwargs):
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        self.win.pbar_set(50)
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        if self.win:
+            self.pbar_set(50)
         cmd.release_device()
         #self.serport.close_port()
-        self.log_info("Произведено отключение от устройства")
-        self.win.pbar_set(100)
+        self.log_info("Disconnect from target")
+        if self.win:
+            self.pbar_set(100)
         return True
 
     def write(self, **kwargs):
         self.serport.reset_input_buffer()
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        region = self.win.get_curr_region()
-        flash = self.win.get_curr_flash()
-        page_size = self.mcu.flash[flash][region].page_size
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
 
+        if "region" in kwargs:
+            self.cur_region = kwargs["region"]
+        else:
+            self.cur_region = self.win.get_curr_region()
+        if "flash" in kwargs:
+            self.cur_flash = kwargs["flash"]
+        else:
+            self.cur_flash = self.win.get_curr_flash()
+
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        
+            
+        region = self.cur_region
+        flash = self.cur_flash
+        page_size = self.mcu.flash[flash][region].page_size
+        if kwargs['count_pages'] is None:
+            filesize = os.path.getsize(kwargs['filepath'])
+            pages_total = self.mcu.flash[flash][region].pages
+            addr = kwargs['firstpage'] * page_size
+            if filesize > ((page_size * pages_total) - addr):
+                raise ProtException("Filesize more then mcu flash size!", self.win)
+            count_pages = ((filesize // page_size) + (1 if filesize % page_size else 0))
+        else:
+            count_pages = kwargs['count_pages']
+
+        lastpage = kwargs['firstpage'] + count_pages - 1
         raw_data = self.open_bin(kwargs['filepath'])
-        self.log_info("Дополнение бинарного файла до размера целой страницы ...")
-        data = [0xFF] * (kwargs['lastpage'] - kwargs['firstpage'] + 1) * page_size
+        self.log_info("Completing a binary file to the size of an entire page...")
+        data = [0xFF] * (lastpage - kwargs['firstpage'] + 1) * page_size
         for i in range(0, len(raw_data)):
             data[i] = raw_data[i]
         state = 0.0
-        self.win.pbar_set(state)
+        self.pbar_set(state)
 
         cmd_count = 0
         if (kwargs['erall']):
             cmd.cmd_erase_full(flash, region)
             cmd_count += 1
         state += 20.0
-        self.win.pbar_set(state)
+        self.pbar_set(state)
 
-        self.log_info("Запись страниц%s:" % (" c предварительным стиранием" if kwargs['erpages'] else ""))
-        for p in range(0, kwargs['lastpage'] - kwargs['firstpage'] + 1):
+        self.log_info("Write pages %s:" % (" with pre-erasing" if kwargs['erpages'] else ""))
+        for p in range(0, lastpage - kwargs['firstpage'] + 1):
             cmd.cmd_write_page(kwargs['firstpage'] + p, data[p * page_size:p * page_size + page_size], flash, region, kwargs['erpages'])
-            state += 15 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-            self.win.pbar_set(state)
+            state += 15 / (lastpage- kwargs['firstpage'] + 1)
+            self.pbar_set(state)
             cmd_count += 1
 
-        self.log_info("Ожидание выполнения команд ...")
+        self.log_info("Waiting for completing commands ...")
         for i in range(0, cmd_count):
             cmd.cmd_msg()
             state += 20 / cmd_count
-            self.win.pbar_set(state)
+            self.pbar_set(state)
 
         if (kwargs["verif"]):
-            self.log_info("Верификация записанных данных ...")
+            self.log_info("Verification ...")
             # read pages
             read_data = []
-            for p in range(kwargs['firstpage'], kwargs['lastpage'] + 1):
+            for p in range(kwargs['firstpage'], lastpage+ 1):
                 cmd.cmd_read_page(p, flash, region)
-                state += 15 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-                self.win.pbar_set(state)
-            self.log_info("Ожидание выполнения команд ...")
-            for p in range(kwargs['firstpage'], kwargs['lastpage'] + 1):
+                state += 15 / (lastpage- kwargs['firstpage'] + 1)
+                self.pbar_set(state)
+            self.log_info("Waiting for completing commands ...")
+            for p in range(kwargs['firstpage'], lastpage+ 1):
                 read_data += cmd.cmd_msg()['data']
-                state += 20 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-                self.win.pbar_set(state)
+                state += 20 / (lastpage- kwargs['firstpage'] + 1)
+                self.pbar_set(state)
             # compare
             err = 0
             err_limit = 16
@@ -617,77 +649,96 @@ class Protocol:
                 if (read_data[i] != data[i]):
                     err += 1
                     if err_limit > 0:
-                        self.log_err("Адрес 0%08X, записано 0x%02X - прочитано 0x%02X" % (i, data[i], read_data[i]), msgbox_en=False)
+                        self.log_err("Addr 0%08X, writed 0x%02X, but readed 0x%02X" % (i, data[i], read_data[i]), msgbox_en=False)
                         err_limit -= 1
                         if err_limit == 0:
-                            self.log_err("Показаны первые 16 ошибок верификации, дальнейшие показываться не будут")
-            self.log_info("Верификация завершилась, количество ошибок: %0d" % err)
-        self.win.pbar_set(100)
+                            self.log_err("Only the first 16 verification errors are shown.")
+            self.log_info("Verification completed, number of errors: %0d" % err)
+        self.pbar_set(100)
 
     def erase(self, **kwargs):
         self.serport.reset_input_buffer()
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        region = self.win.get_curr_region()
-        flash = self.win.get_curr_flash()
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        if "region" in kwargs:
+            self.cur_region = kwargs["region"]
+        else:
+            self.cur_region = self.win.get_curr_region()
+        if "flash" in kwargs:
+            self.cur_flash = kwargs["flash"]
+        else:
+            self.cur_flash = self.win.get_curr_flash()
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        region = self.cur_region
+        flash = self.cur_flash
+
         cmd_count = 0
         state = 0.0
-        self.win.pbar_set(state)
+        self.pbar_set(state)
         if (kwargs['erall']):
-            self.win.pbar_set(50)
+            self.pbar_set(50)
             cmd.cmd_erase_full(flash, region)
             cmd.cmd_msg()
         else:
-            for p in range(kwargs['firstpage'], kwargs['lastpage'] + 1):
+            for p in range(kwargs['firstpage'], lastpage + 1):
                 cmd.cmd_erase_page(p, flash, region)
-                state += 50 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-                self.win.pbar_set(state)
+                state += 50 / (lastpage - kwargs['firstpage'] + 1)
+                self.pbar_set(state)
                 cmd_count += 1
             self.log_info("Ожидание выполнения команд ...")
             for i in range(0, cmd_count):
                 cmd.cmd_msg()
                 state += 50 / cmd_count
-                self.win.pbar_set(state)
-        self.win.pbar_set(100)
+                self.pbar_set(state)
+        self.pbar_set(100)
 
     def read(self, **kwargs):
         self.serport.reset_input_buffer()
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        region = self.win.get_curr_region()
-        flash = self.win.get_curr_flash()
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        if "region" in kwargs:
+            self.cur_region = kwargs["region"]
+        else:
+            self.cur_region = self.win.get_curr_region()
+        if "flash" in kwargs:
+            self.cur_flash = kwargs["flash"]
+        else:
+            self.cur_flash = self.win.get_curr_flash()
+
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        region = self.cur_region
+        flash = self.cur_flash
+
         page_data = []
         state = 10.0
-        self.win.pbar_set(state)
-        for page in range(kwargs['firstpage'], kwargs['lastpage'] + 1):
+        self.pbar_set(state)
+        for page in range(kwargs['firstpage'], lastpage + 1):
             cmd.cmd_read_page(page, flash, region)
-            state += 40 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-            self.win.pbar_set(state)
+            state += 40 / (lastpage - kwargs['firstpage'] + 1)
+            self.pbar_set(state)
         self.log_info("Ожидание выполнения команд ...")
-        for page in range(kwargs['firstpage'], kwargs['lastpage'] + 1):
+        for page in range(kwargs['firstpage'], lastpage + 1):
             page_data += cmd.cmd_msg()['data']
-            state += 40 / (kwargs['lastpage'] - kwargs['firstpage'] + 1)
-            self.win.pbar_set(state)
+            state += 40 / (lastpage - kwargs['firstpage'] + 1)
+            self.pbar_set(state)
         self.save_bin(kwargs['filepath'], page_data)
-        self.win.pbar_set(100)
+        self.pbar_set(100)
 
     def get_cfgword(self, **kwargs):
         self.serport.reset_input_buffer()
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        self.win.pbar_set(50)
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        self.pbar_set(50)
         cfgword = cmd.cmd_get_cfgword()
-        self.win.pbar_set(100)
+        self.pbar_set(100)
         return cfgword
 
     def set_cfgword(self, **kwargs):
         self.serport.reset_input_buffer()
-        self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win)
-        self.win.pbar_set(50)
+        #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
+        #self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        self.pbar_set(50)
         cmd.cmd_set_cfgword(kwargs['cfgword'])
-        self.win.pbar_set(100)
+        self.pbar_set(100)

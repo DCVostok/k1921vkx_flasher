@@ -38,12 +38,12 @@ class SerPort(serial.Serial):
         self.dtr = False
         self.rts = False
         if not quiet:
-            self.log_info("Открываю порт %s %s" % (port, baudrate))
+            self.log_info("Try open port %s %s" % (port, baudrate))
         self.open()
 
     def close_port(self, quiet=False):
         if not quiet:
-            self.log_info("Закрываю порт")
+            self.log_info("COM port closed")
         self.close()
 
     def write_bytes(self, blist):

@@ -70,7 +70,7 @@ def init(debug=False, logfile=None):
     COLOR_FORMAT = formatter_message(FORMAT, True)
     consoleHandler = logging.StreamHandler(sys.stdout)
     if sys.platform.startswith('win'):
-        consoleHandler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+        consoleHandler.setFormatter(logging.Formatter("%(levelname)s: %(message)s \n"))
     else:
         consoleHandler.setFormatter(ColoredFormatter(COLOR_FORMAT))
     rootLogger.addHandler(consoleHandler)

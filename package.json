@@ -1,0 +1,14 @@
+{
+  "name": "tool-k1921vkx-flasher",
+  "version": "1.0.0",
+  "description": "Uart flasher for MCUs family 1921vkx with bootloader",
+  "keywords": [
+    "tools",
+    "uploader",
+    "k1921vk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DCVostok/k1921vkx_flasher"
+  }
+}
