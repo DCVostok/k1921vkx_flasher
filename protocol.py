@@ -332,9 +332,10 @@ class CmdInterface:
         self.log_info(LogId["PROG"] + "Reset mcu ...")
         time.sleep(0.1)
         self.serport.dtr = True
-        time.sleep(0.3)
+        time.sleep(0.01)
+        self.serport.reset_input_buffer()
         self.serport.dtr = False
-        time.sleep(0.1)
+        time.sleep(0.01)
 
     def init_device(self):
         self.log_info(LogId["PROG"] + "Connecting ro target ...")

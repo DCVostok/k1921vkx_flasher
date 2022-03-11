@@ -1,6 +1,6 @@
 {
   "name": "tool-k1921vkx-flasher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Uart flasher for MCUs family 1921vkx with bootloader",
   "keywords": [
     "tools",
