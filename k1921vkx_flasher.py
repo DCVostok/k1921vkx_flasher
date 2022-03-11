@@ -122,21 +122,25 @@ def cmd_exec(args):
         #print(" Сouldn't connect to the target")
         prot.deinit()
         raise Exception("Сouldn't connect to the target")
-    if args.erase:
-        pass
-    if args.write:
-        prot.write(filepath=args.file,
-                   firstpage=args.first_page,
-                   region=region_vars[args.flash_region],
-                   flash=flash_vars[args.flash],
-                   count_pages=args.count_pages,
-                   ernone=not(args.full_erase or args.erase), 
-                   erall=args.full_erase, 
-                   erpages=args.erase,
-                   verif=args.verfi,
-                   jump=not(args.jump_exe is None),
-                   jumpaddr=args.jump_exe)
-    prot.deinit()
+    try:
+        if args.erase:
+            pass
+        if args.write:
+            prot.write(filepath=args.file,
+                       firstpage=args.first_page,
+                       region=region_vars[args.flash_region],
+                       flash=flash_vars[args.flash],
+                       count_pages=args.count_pages,
+                       ernone=not(args.full_erase or args.erase), 
+                       erall=args.full_erase, 
+                       erpages=args.erase,
+                       verif=args.verfi,
+                       jump=not(args.jump_exe is None),
+                       jumpaddr=args.jump_exe)
+    except:
+        raise Exception("Writing programm error.")
+    finally:
+        prot.deinit()
 
 if __name__ == '__main__':
     if args.cmd_mode:
