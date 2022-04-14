@@ -6,7 +6,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import k1921vkx_flasher.ui_rc
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -20,7 +22,8 @@ class Ui_MainWindow(object):
         MainWindow.setFont(font)
         MainWindow.setWindowTitle("K1921VKx Flasher")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/flasher.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icons/flasher.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -40,7 +43,8 @@ class Ui_MainWindow(object):
         self.btn_updport.setMaximumSize(QtCore.QSize(24, 24))
         self.btn_updport.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/icons/update.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/icons/update.png"),
+                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_updport.setIcon(icon1)
         self.btn_updport.setObjectName("btn_updport")
         self.hbox_port.addWidget(self.btn_updport)
@@ -129,10 +133,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_12.addLayout(self.vbox_options)
         self.tabs_cmd = QtWidgets.QTabWidget(self.centralwidget)
         self.tabs_cmd.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tabs_cmd.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.tabs_cmd.sizePolicy().hasHeightForWidth())
         self.tabs_cmd.setSizePolicy(sizePolicy)
         self.tabs_cmd.setMinimumSize(QtCore.QSize(488, 320))
         self.tabs_cmd.setMaximumSize(QtCore.QSize(16777215, 320))
@@ -142,10 +148,12 @@ class Ui_MainWindow(object):
         self.tabs_cmd.setObjectName("tabs_cmd")
         self.tab_info = QtWidgets.QWidget()
         self.tab_info.setEnabled(False)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tab_info.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.tab_info.sizePolicy().hasHeightForWidth())
         self.tab_info.setSizePolicy(sizePolicy)
         self.tab_info.setMaximumSize(QtCore.QSize(16777215, 480))
         self.tab_info.setObjectName("tab_info")
@@ -159,38 +167,44 @@ class Ui_MainWindow(object):
         self.tinfo_lab_chipid.setMaximumSize(QtCore.QSize(16777215, 23))
         self.tinfo_lab_chipid.setText("CHIPID")
         self.tinfo_lab_chipid.setObjectName("tinfo_lab_chipid")
-        self.tinfo_hbox_info_values.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_chipid)
+        self.tinfo_hbox_info_values.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_chipid)
         self.tinfo_ledit_chipid = QtWidgets.QLineEdit(self.tab_info)
         self.tinfo_ledit_chipid.setMinimumSize(QtCore.QSize(90, 0))
         self.tinfo_ledit_chipid.setMaximumSize(QtCore.QSize(90, 23))
         self.tinfo_ledit_chipid.setText("0xFFFFFFFF")
         self.tinfo_ledit_chipid.setReadOnly(True)
         self.tinfo_ledit_chipid.setObjectName("tinfo_ledit_chipid")
-        self.tinfo_hbox_info_values.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_chipid)
+        self.tinfo_hbox_info_values.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_chipid)
         self.tinfo_lab_cpuid = QtWidgets.QLabel(self.tab_info)
         self.tinfo_lab_cpuid.setMaximumSize(QtCore.QSize(16777215, 23))
         self.tinfo_lab_cpuid.setText("CPUID")
         self.tinfo_lab_cpuid.setObjectName("tinfo_lab_cpuid")
-        self.tinfo_hbox_info_values.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_cpuid)
+        self.tinfo_hbox_info_values.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_cpuid)
         self.tinfo_ledit_cpuid = QtWidgets.QLineEdit(self.tab_info)
         self.tinfo_ledit_cpuid.setMinimumSize(QtCore.QSize(90, 0))
         self.tinfo_ledit_cpuid.setMaximumSize(QtCore.QSize(90, 23))
         self.tinfo_ledit_cpuid.setText("0xFFFFFFFF")
         self.tinfo_ledit_cpuid.setReadOnly(True)
         self.tinfo_ledit_cpuid.setObjectName("tinfo_ledit_cpuid")
-        self.tinfo_hbox_info_values.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_cpuid)
+        self.tinfo_hbox_info_values.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_cpuid)
         self.tinfo_lab_bootver = QtWidgets.QLabel(self.tab_info)
         self.tinfo_lab_bootver.setMaximumSize(QtCore.QSize(16777215, 23))
         self.tinfo_lab_bootver.setText("Версия загрузчика")
         self.tinfo_lab_bootver.setObjectName("tinfo_lab_bootver")
-        self.tinfo_hbox_info_values.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_bootver)
+        self.tinfo_hbox_info_values.setWidget(
+            2, QtWidgets.QFormLayout.LabelRole, self.tinfo_lab_bootver)
         self.tinfo_ledit_bootver = QtWidgets.QLineEdit(self.tab_info)
         self.tinfo_ledit_bootver.setMinimumSize(QtCore.QSize(90, 0))
         self.tinfo_ledit_bootver.setMaximumSize(QtCore.QSize(90, 23))
         self.tinfo_ledit_bootver.setText("0.0")
         self.tinfo_ledit_bootver.setReadOnly(True)
         self.tinfo_ledit_bootver.setObjectName("tinfo_ledit_bootver")
-        self.tinfo_hbox_info_values.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_bootver)
+        self.tinfo_hbox_info_values.setWidget(
+            2, QtWidgets.QFormLayout.FieldRole, self.tinfo_ledit_bootver)
         self.tinfo_hbox_info.addLayout(self.tinfo_hbox_info_values)
         self.tinfo_lab_mcu = QtWidgets.QLabel(self.tab_info)
         self.tinfo_lab_mcu.setMinimumSize(QtCore.QSize(150, 0))
@@ -200,13 +214,16 @@ class Ui_MainWindow(object):
         self.tinfo_hbox_info.addWidget(self.tinfo_lab_mcu)
         self.verticalLayout_5.addLayout(self.tinfo_hbox_info)
         self.tinfo_tbl_flash = QtWidgets.QTableWidget(self.tab_info)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tinfo_tbl_flash.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.tinfo_tbl_flash.sizePolicy().hasHeightForWidth())
         self.tinfo_tbl_flash.setSizePolicy(sizePolicy)
         self.tinfo_tbl_flash.setMaximumSize(QtCore.QSize(10000, 174))
-        self.tinfo_tbl_flash.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tinfo_tbl_flash.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tinfo_tbl_flash.setShowGrid(True)
         self.tinfo_tbl_flash.setCornerButtonEnabled(False)
         self.tinfo_tbl_flash.setObjectName("tinfo_tbl_flash")
@@ -237,10 +254,12 @@ class Ui_MainWindow(object):
         self.tabs_cmd.addTab(self.tab_info, "Информация")
         self.tab_write = QtWidgets.QWidget()
         self.tab_write.setEnabled(False)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tab_write.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.tab_write.sizePolicy().hasHeightForWidth())
         self.tab_write.setSizePolicy(sizePolicy)
         self.tab_write.setMaximumSize(QtCore.QSize(16777215, 480))
         self.tab_write.setObjectName("tab_write")
@@ -253,7 +272,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.twrite_frm_file)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.twrite_lab_fileopen = QtWidgets.QLabel(self.twrite_frm_file)
-        self.twrite_lab_fileopen.setText("Выбор файла для постраничной записи (*.bin):")
+        self.twrite_lab_fileopen.setText(
+            "Выбор файла для постраничной записи (*.bin):")
         self.twrite_lab_fileopen.setObjectName("twrite_lab_fileopen")
         self.verticalLayout_3.addWidget(self.twrite_lab_fileopen)
         self.twrite_hbox_file = QtWidgets.QHBoxLayout()
@@ -264,10 +284,12 @@ class Ui_MainWindow(object):
         self.twrite_ledit_filepath.setObjectName("twrite_ledit_filepath")
         self.twrite_hbox_file.addWidget(self.twrite_ledit_filepath)
         self.twrite_btn_fileopen = QtWidgets.QPushButton(self.twrite_frm_file)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.twrite_btn_fileopen.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.twrite_btn_fileopen.sizePolicy().hasHeightForWidth())
         self.twrite_btn_fileopen.setSizePolicy(sizePolicy)
         self.twrite_btn_fileopen.setMaximumSize(QtCore.QSize(20, 23))
         self.twrite_btn_fileopen.setText("...")
@@ -277,60 +299,74 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.twrite_form_firstpage = QtWidgets.QFormLayout()
-        self.twrite_form_firstpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_form_firstpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_form_firstpage.setObjectName("twrite_form_firstpage")
         self.twrite_lab_addr = QtWidgets.QLabel(self.twrite_frm_file)
         self.twrite_lab_addr.setText("Адрес")
-        self.twrite_lab_addr.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_lab_addr.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_lab_addr.setObjectName("twrite_lab_addr")
-        self.twrite_form_firstpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_addr)
+        self.twrite_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_addr)
         self.twrite_ledit_addr = QtWidgets.QLineEdit(self.twrite_frm_file)
         self.twrite_ledit_addr.setMinimumSize(QtCore.QSize(90, 0))
         self.twrite_ledit_addr.setMaximumSize(QtCore.QSize(90, 23))
         self.twrite_ledit_addr.setText("0x00000000")
         self.twrite_ledit_addr.setReadOnly(False)
         self.twrite_ledit_addr.setObjectName("twrite_ledit_addr")
-        self.twrite_form_firstpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_addr)
+        self.twrite_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_addr)
         self.twrite_lab_page = QtWidgets.QLabel(self.twrite_frm_file)
         self.twrite_lab_page.setText("Номер стр.:")
-        self.twrite_lab_page.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_lab_page.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_lab_page.setObjectName("twrite_lab_page")
-        self.twrite_form_firstpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_page)
+        self.twrite_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_page)
         self.twrite_ledit_page = QtWidgets.QLineEdit(self.twrite_frm_file)
         self.twrite_ledit_page.setMinimumSize(QtCore.QSize(90, 0))
         self.twrite_ledit_page.setMaximumSize(QtCore.QSize(90, 23))
         self.twrite_ledit_page.setText("0")
         self.twrite_ledit_page.setReadOnly(False)
         self.twrite_ledit_page.setObjectName("twrite_ledit_page")
-        self.twrite_form_firstpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_page)
+        self.twrite_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_page)
         self.horizontalLayout_2.addLayout(self.twrite_form_firstpage)
         self.twrite_form_lastpage = QtWidgets.QFormLayout()
-        self.twrite_form_lastpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_form_lastpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_form_lastpage.setObjectName("twrite_form_lastpage")
         self.twrite_lab_size = QtWidgets.QLabel(self.twrite_frm_file)
         self.twrite_lab_size.setText("Размер (байт)")
-        self.twrite_lab_size.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_lab_size.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_lab_size.setObjectName("twrite_lab_size")
-        self.twrite_form_lastpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_size)
+        self.twrite_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_size)
         self.twrite_ledit_size = QtWidgets.QLineEdit(self.twrite_frm_file)
         self.twrite_ledit_size.setMinimumSize(QtCore.QSize(90, 0))
         self.twrite_ledit_size.setMaximumSize(QtCore.QSize(90, 23))
         self.twrite_ledit_size.setText("0x00000000")
         self.twrite_ledit_size.setReadOnly(True)
         self.twrite_ledit_size.setObjectName("twrite_ledit_size")
-        self.twrite_form_lastpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_size)
+        self.twrite_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_size)
         self.twrite_lab_pages = QtWidgets.QLabel(self.twrite_frm_file)
         self.twrite_lab_pages.setText("Кол-во стр.:")
-        self.twrite_lab_pages.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.twrite_lab_pages.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.twrite_lab_pages.setObjectName("twrite_lab_pages")
-        self.twrite_form_lastpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_pages)
+        self.twrite_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.twrite_lab_pages)
         self.twrite_ledit_pages = QtWidgets.QLineEdit(self.twrite_frm_file)
         self.twrite_ledit_pages.setMinimumSize(QtCore.QSize(90, 0))
         self.twrite_ledit_pages.setMaximumSize(QtCore.QSize(90, 23))
         self.twrite_ledit_pages.setText("0")
         self.twrite_ledit_pages.setReadOnly(True)
         self.twrite_ledit_pages.setObjectName("twrite_ledit_pages")
-        self.twrite_form_lastpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_pages)
+        self.twrite_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_pages)
         self.horizontalLayout_2.addLayout(self.twrite_form_lastpage)
         self.verticalLayout_3.addLayout(self.horizontalLayout_2)
         self.verticalLayout_7.addWidget(self.twrite_frm_file)
@@ -351,7 +387,8 @@ class Ui_MainWindow(object):
         self.twrite_rbtn_erall.setText("Стереть всё")
         self.twrite_rbtn_erall.setObjectName("twrite_rbtn_erall")
         self.horizontalLayout_6.addWidget(self.twrite_rbtn_erall)
-        self.twrite_rbtn_erpages = QtWidgets.QRadioButton(self.twrite_frm_erase)
+        self.twrite_rbtn_erpages = QtWidgets.QRadioButton(
+            self.twrite_frm_erase)
         self.twrite_rbtn_erpages.setMaximumSize(QtCore.QSize(16777215, 23))
         self.twrite_rbtn_erpages.setText("Стереть страницы")
         self.twrite_rbtn_erpages.setChecked(True)
@@ -377,7 +414,8 @@ class Ui_MainWindow(object):
         self.twrite_chbox_jump.setMaximumSize(QtCore.QSize(16777215, 23))
         self.twrite_chbox_jump.setText("Переход к исполнению по адресу")
         self.twrite_chbox_jump.setObjectName("twrite_chbox_jump")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.twrite_chbox_jump)
+        self.formLayout.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.twrite_chbox_jump)
         self.twrite_ledit_jumpaddr = QtWidgets.QLineEdit(self.twrite_frm_opts)
         self.twrite_ledit_jumpaddr.setEnabled(False)
         self.twrite_ledit_jumpaddr.setMinimumSize(QtCore.QSize(90, 0))
@@ -385,10 +423,12 @@ class Ui_MainWindow(object):
         self.twrite_ledit_jumpaddr.setText("0x00000000")
         self.twrite_ledit_jumpaddr.setReadOnly(False)
         self.twrite_ledit_jumpaddr.setObjectName("twrite_ledit_jumpaddr")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_jumpaddr)
+        self.formLayout.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.twrite_ledit_jumpaddr)
         self.verticalLayout_4.addLayout(self.formLayout)
         self.verticalLayout_7.addWidget(self.twrite_frm_opts)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem)
         self.tabs_cmd.addTab(self.tab_write, "Запись")
         self.tab_erase = QtWidgets.QWidget()
@@ -410,7 +450,8 @@ class Ui_MainWindow(object):
         self.terase_rbtn_erall.setChecked(True)
         self.terase_rbtn_erall.setObjectName("terase_rbtn_erall")
         self.horizontalLayout_7.addWidget(self.terase_rbtn_erall)
-        self.terase_rbtn_erpages = QtWidgets.QRadioButton(self.terase_frm_erase)
+        self.terase_rbtn_erpages = QtWidgets.QRadioButton(
+            self.terase_frm_erase)
         self.terase_rbtn_erpages.setMaximumSize(QtCore.QSize(16777215, 23))
         self.terase_rbtn_erpages.setText("Стереть страницы")
         self.terase_rbtn_erpages.setObjectName("terase_rbtn_erpages")
@@ -424,63 +465,78 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.terase_frm_addr)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.terase_form_firstpage = QtWidgets.QFormLayout()
-        self.terase_form_firstpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_form_firstpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_form_firstpage.setObjectName("terase_form_firstpage")
         self.terase_lab_addr = QtWidgets.QLabel(self.terase_frm_addr)
         self.terase_lab_addr.setText("Адрес")
-        self.terase_lab_addr.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_lab_addr.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_lab_addr.setObjectName("terase_lab_addr")
-        self.terase_form_firstpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.terase_lab_addr)
+        self.terase_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.terase_lab_addr)
         self.terase_ledit_addr = QtWidgets.QLineEdit(self.terase_frm_addr)
         self.terase_ledit_addr.setMinimumSize(QtCore.QSize(90, 0))
         self.terase_ledit_addr.setMaximumSize(QtCore.QSize(90, 23))
         self.terase_ledit_addr.setText("0x00000000")
         self.terase_ledit_addr.setReadOnly(False)
         self.terase_ledit_addr.setObjectName("terase_ledit_addr")
-        self.terase_form_firstpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_addr)
+        self.terase_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_addr)
         self.terase_lab_page = QtWidgets.QLabel(self.terase_frm_addr)
         self.terase_lab_page.setText("Номер стр.:")
-        self.terase_lab_page.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_lab_page.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_lab_page.setObjectName("terase_lab_page")
-        self.terase_form_firstpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.terase_lab_page)
+        self.terase_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.terase_lab_page)
         self.terase_ledit_page = QtWidgets.QLineEdit(self.terase_frm_addr)
         self.terase_ledit_page.setMinimumSize(QtCore.QSize(90, 0))
         self.terase_ledit_page.setMaximumSize(QtCore.QSize(90, 23))
         self.terase_ledit_page.setText("0")
         self.terase_ledit_page.setReadOnly(False)
         self.terase_ledit_page.setObjectName("terase_ledit_page")
-        self.terase_form_firstpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_page)
+        self.terase_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_page)
         self.horizontalLayout.addLayout(self.terase_form_firstpage)
         self.terase_form_lastpage = QtWidgets.QFormLayout()
-        self.terase_form_lastpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_form_lastpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_form_lastpage.setObjectName("terase_form_lastpage")
         self.terase_lab_size = QtWidgets.QLabel(self.terase_frm_addr)
         self.terase_lab_size.setText("Размер (байт)")
-        self.terase_lab_size.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_lab_size.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_lab_size.setObjectName("terase_lab_size")
-        self.terase_form_lastpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.terase_lab_size)
+        self.terase_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.terase_lab_size)
         self.terase_ledit_size = QtWidgets.QLineEdit(self.terase_frm_addr)
         self.terase_ledit_size.setMinimumSize(QtCore.QSize(90, 0))
         self.terase_ledit_size.setMaximumSize(QtCore.QSize(90, 23))
         self.terase_ledit_size.setText("0x00000000")
         self.terase_ledit_size.setReadOnly(False)
         self.terase_ledit_size.setObjectName("terase_ledit_size")
-        self.terase_form_lastpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_size)
+        self.terase_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_size)
         self.terase_lab_pages = QtWidgets.QLabel(self.terase_frm_addr)
         self.terase_lab_pages.setText("Кол-во стр.:")
-        self.terase_lab_pages.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.terase_lab_pages.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.terase_lab_pages.setObjectName("terase_lab_pages")
-        self.terase_form_lastpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.terase_lab_pages)
+        self.terase_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.terase_lab_pages)
         self.terase_ledit_pages = QtWidgets.QLineEdit(self.terase_frm_addr)
         self.terase_ledit_pages.setMinimumSize(QtCore.QSize(90, 0))
         self.terase_ledit_pages.setMaximumSize(QtCore.QSize(90, 23))
         self.terase_ledit_pages.setText("0")
         self.terase_ledit_pages.setReadOnly(False)
         self.terase_ledit_pages.setObjectName("terase_ledit_pages")
-        self.terase_form_lastpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_pages)
+        self.terase_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.terase_ledit_pages)
         self.horizontalLayout.addLayout(self.terase_form_lastpage)
         self.verticalLayout_6.addWidget(self.terase_frm_addr)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_6.addItem(spacerItem1)
         self.tabs_cmd.addTab(self.tab_erase, "Стирание")
         self.tab_read = QtWidgets.QWidget()
@@ -496,7 +552,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.tread_frm_file)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.tread_lab_fileopen = QtWidgets.QLabel(self.tread_frm_file)
-        self.tread_lab_fileopen.setText("Выбор файла для сохранения страниц (*.bin):")
+        self.tread_lab_fileopen.setText(
+            "Выбор файла для сохранения страниц (*.bin):")
         self.tread_lab_fileopen.setObjectName("tread_lab_fileopen")
         self.verticalLayout_8.addWidget(self.tread_lab_fileopen)
         self.tread_hbox_file = QtWidgets.QHBoxLayout()
@@ -508,10 +565,12 @@ class Ui_MainWindow(object):
         self.tread_ledit_filepath.setObjectName("tread_ledit_filepath")
         self.tread_hbox_file.addWidget(self.tread_ledit_filepath)
         self.tread_btn_filesave = QtWidgets.QPushButton(self.tread_frm_file)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tread_btn_filesave.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.tread_btn_filesave.sizePolicy().hasHeightForWidth())
         self.tread_btn_filesave.setSizePolicy(sizePolicy)
         self.tread_btn_filesave.setMaximumSize(QtCore.QSize(20, 23))
         self.tread_btn_filesave.setText("...")
@@ -521,64 +580,79 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.tread_form_firstpage = QtWidgets.QFormLayout()
-        self.tread_form_firstpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_form_firstpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_form_firstpage.setObjectName("tread_form_firstpage")
         self.tread_lab_addr = QtWidgets.QLabel(self.tread_frm_file)
         self.tread_lab_addr.setText("Адрес")
-        self.tread_lab_addr.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_lab_addr.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_lab_addr.setObjectName("tread_lab_addr")
-        self.tread_form_firstpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.tread_lab_addr)
+        self.tread_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.tread_lab_addr)
         self.tread_ledit_addr = QtWidgets.QLineEdit(self.tread_frm_file)
         self.tread_ledit_addr.setMinimumSize(QtCore.QSize(90, 0))
         self.tread_ledit_addr.setMaximumSize(QtCore.QSize(90, 23))
         self.tread_ledit_addr.setText("0x00000000")
         self.tread_ledit_addr.setReadOnly(False)
         self.tread_ledit_addr.setObjectName("tread_ledit_addr")
-        self.tread_form_firstpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_addr)
+        self.tread_form_firstpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_addr)
         self.tread_lab_page = QtWidgets.QLabel(self.tread_frm_file)
         self.tread_lab_page.setText("Номер стр.:")
-        self.tread_lab_page.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_lab_page.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_lab_page.setObjectName("tread_lab_page")
-        self.tread_form_firstpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.tread_lab_page)
+        self.tread_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.tread_lab_page)
         self.tread_ledit_page = QtWidgets.QLineEdit(self.tread_frm_file)
         self.tread_ledit_page.setMinimumSize(QtCore.QSize(90, 0))
         self.tread_ledit_page.setMaximumSize(QtCore.QSize(90, 23))
         self.tread_ledit_page.setText("0")
         self.tread_ledit_page.setReadOnly(False)
         self.tread_ledit_page.setObjectName("tread_ledit_page")
-        self.tread_form_firstpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_page)
+        self.tread_form_firstpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_page)
         self.horizontalLayout_4.addLayout(self.tread_form_firstpage)
         self.tread_form_lastpage = QtWidgets.QFormLayout()
-        self.tread_form_lastpage.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_form_lastpage.setLabelAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_form_lastpage.setObjectName("tread_form_lastpage")
         self.tread_lab_size = QtWidgets.QLabel(self.tread_frm_file)
         self.tread_lab_size.setText("Размер (байт)")
-        self.tread_lab_size.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_lab_size.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_lab_size.setObjectName("tread_lab_size")
-        self.tread_form_lastpage.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.tread_lab_size)
+        self.tread_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.LabelRole, self.tread_lab_size)
         self.tread_ledit_size = QtWidgets.QLineEdit(self.tread_frm_file)
         self.tread_ledit_size.setMinimumSize(QtCore.QSize(90, 0))
         self.tread_ledit_size.setMaximumSize(QtCore.QSize(90, 23))
         self.tread_ledit_size.setText("0x00000000")
         self.tread_ledit_size.setReadOnly(False)
         self.tread_ledit_size.setObjectName("tread_ledit_size")
-        self.tread_form_lastpage.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_size)
+        self.tread_form_lastpage.setWidget(
+            0, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_size)
         self.tread_lab_pages = QtWidgets.QLabel(self.tread_frm_file)
         self.tread_lab_pages.setText("Кол-во стр.:")
-        self.tread_lab_pages.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.tread_lab_pages.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.tread_lab_pages.setObjectName("tread_lab_pages")
-        self.tread_form_lastpage.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.tread_lab_pages)
+        self.tread_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.LabelRole, self.tread_lab_pages)
         self.tread_ledit_pages = QtWidgets.QLineEdit(self.tread_frm_file)
         self.tread_ledit_pages.setMinimumSize(QtCore.QSize(90, 0))
         self.tread_ledit_pages.setMaximumSize(QtCore.QSize(90, 23))
         self.tread_ledit_pages.setText("0")
         self.tread_ledit_pages.setReadOnly(False)
         self.tread_ledit_pages.setObjectName("tread_ledit_pages")
-        self.tread_form_lastpage.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_pages)
+        self.tread_form_lastpage.setWidget(
+            1, QtWidgets.QFormLayout.FieldRole, self.tread_ledit_pages)
         self.horizontalLayout_4.addLayout(self.tread_form_lastpage)
         self.verticalLayout_8.addLayout(self.horizontalLayout_4)
         self.verticalLayout_2.addWidget(self.tread_frm_file)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem2)
         self.tabs_cmd.addTab(self.tab_read, "Чтение")
         self.tab_config = QtWidgets.QWidget()
@@ -663,38 +737,63 @@ class Ui_MainWindow(object):
         self.act_exit.triggered.connect(MainWindow.close)
         self.act_about.triggered.connect(MainWindow.handle_act_about_triggered)
         self.btn_connect.clicked.connect(MainWindow.handle_btn_connect_clicked)
-        self.rbtn_flash0.toggled['bool'].connect(MainWindow.handle_flash_select_toggled)
-        self.rbtn_flash1.toggled['bool'].connect(MainWindow.handle_flash_select_toggled)
+        self.rbtn_flash0.toggled['bool'].connect(
+            MainWindow.handle_flash_select_toggled)
+        self.rbtn_flash1.toggled['bool'].connect(
+            MainWindow.handle_flash_select_toggled)
         self.btn_exec.clicked.connect(MainWindow.handle_btn_exec_clicked)
-        self.twrite_ledit_filepath.textChanged['QString'].connect(MainWindow.handle_ledit_filepath_changed)
-        self.tread_ledit_filepath.textEdited['QString'].connect(MainWindow.handle_ledit_filepath_changed)
-        self.tread_btn_filesave.clicked.connect(MainWindow.handle_btn_filesave_clicked)
+        self.twrite_ledit_filepath.textChanged['QString'].connect(
+            MainWindow.handle_ledit_filepath_changed)
+        self.tread_ledit_filepath.textEdited['QString'].connect(
+            MainWindow.handle_ledit_filepath_changed)
+        self.tread_btn_filesave.clicked.connect(
+            MainWindow.handle_btn_filesave_clicked)
         self.btn_updport.clicked.connect(MainWindow.handle_btn_updport_clicked)
-        self.rbtn_regionmain.clicked['bool'].connect(MainWindow.handle_region_select_toggled)
-        self.rbtn_regionnvr.clicked['bool'].connect(MainWindow.handle_region_select_toggled)
-        self.twrite_btn_fileopen.clicked.connect(MainWindow.handle_btn_fileopen_clicked)
-        self.terase_rbtn_erpages.toggled['bool'].connect(MainWindow.handle_terase_mode_select_toggled)
-        self.terase_rbtn_erall.toggled['bool'].connect(MainWindow.handle_terase_mode_select_toggled)
-        self.tconfig_rbtn_read.toggled['bool'].connect(MainWindow.handle_tconfig_mode_select_toggled)
-        self.tconfig_rbtn_write.toggled['bool'].connect(MainWindow.handle_tconfig_mode_select_toggled)
-        self.tabs_cmd.currentChanged['int'].connect(MainWindow.handle_tabs_cmd_changed)
-        self.twrite_ledit_addr.editingFinished.connect(MainWindow.handle_ledit_addr_edited)
-        self.terase_ledit_addr.editingFinished.connect(MainWindow.handle_ledit_addr_edited)
-        self.terase_ledit_size.editingFinished.connect(MainWindow.handle_ledit_size_edited)
-        self.tread_ledit_addr.editingFinished.connect(MainWindow.handle_ledit_addr_edited)
-        self.tread_ledit_size.editingFinished.connect(MainWindow.handle_ledit_size_edited)
-        self.twrite_ledit_page.editingFinished.connect(MainWindow.handle_ledit_page_edited)
-        self.terase_ledit_page.editingFinished.connect(MainWindow.handle_ledit_page_edited)
-        self.terase_ledit_pages.editingFinished.connect(MainWindow.handle_ledit_pages_edited)
-        self.tread_ledit_page.editingFinished.connect(MainWindow.handle_ledit_page_edited)
-        self.tread_ledit_pages.editingFinished.connect(MainWindow.handle_ledit_pages_edited)
-        self.twrite_chbox_jump.toggled['bool'].connect(MainWindow.handle_twrite_chbox_jump_toggled)
+        self.rbtn_regionmain.clicked['bool'].connect(
+            MainWindow.handle_region_select_toggled)
+        self.rbtn_regionnvr.clicked['bool'].connect(
+            MainWindow.handle_region_select_toggled)
+        self.twrite_btn_fileopen.clicked.connect(
+            MainWindow.handle_btn_fileopen_clicked)
+        self.terase_rbtn_erpages.toggled['bool'].connect(
+            MainWindow.handle_terase_mode_select_toggled)
+        self.terase_rbtn_erall.toggled['bool'].connect(
+            MainWindow.handle_terase_mode_select_toggled)
+        self.tconfig_rbtn_read.toggled['bool'].connect(
+            MainWindow.handle_tconfig_mode_select_toggled)
+        self.tconfig_rbtn_write.toggled['bool'].connect(
+            MainWindow.handle_tconfig_mode_select_toggled)
+        self.tabs_cmd.currentChanged['int'].connect(
+            MainWindow.handle_tabs_cmd_changed)
+        self.twrite_ledit_addr.editingFinished.connect(
+            MainWindow.handle_ledit_addr_edited)
+        self.terase_ledit_addr.editingFinished.connect(
+            MainWindow.handle_ledit_addr_edited)
+        self.terase_ledit_size.editingFinished.connect(
+            MainWindow.handle_ledit_size_edited)
+        self.tread_ledit_addr.editingFinished.connect(
+            MainWindow.handle_ledit_addr_edited)
+        self.tread_ledit_size.editingFinished.connect(
+            MainWindow.handle_ledit_size_edited)
+        self.twrite_ledit_page.editingFinished.connect(
+            MainWindow.handle_ledit_page_edited)
+        self.terase_ledit_page.editingFinished.connect(
+            MainWindow.handle_ledit_page_edited)
+        self.terase_ledit_pages.editingFinished.connect(
+            MainWindow.handle_ledit_pages_edited)
+        self.tread_ledit_page.editingFinished.connect(
+            MainWindow.handle_ledit_page_edited)
+        self.tread_ledit_pages.editingFinished.connect(
+            MainWindow.handle_ledit_pages_edited)
+        self.twrite_chbox_jump.toggled['bool'].connect(
+            MainWindow.handle_twrite_chbox_jump_toggled)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.gbox_connect.setTitle(_translate("MainWindow", "Подключение"))
-        self.btn_updport.setToolTip(_translate("MainWindow", "Обновить список портов"))
+        self.btn_updport.setToolTip(_translate(
+            "MainWindow", "Обновить список портов"))
         self.gbox_flash.setTitle(_translate("MainWindow", "Выбор флеш"))
         self.gbox_region.setTitle(_translate("MainWindow", "Выбор области"))
         item = self.tinfo_tbl_flash.horizontalHeaderItem(0)
@@ -702,11 +801,12 @@ class Ui_MainWindow(object):
         item = self.tinfo_tbl_flash.horizontalHeaderItem(2)
         item = self.tinfo_tbl_flash.horizontalHeaderItem(3)
         item = self.tinfo_tbl_flash.horizontalHeaderItem(4)
-        self.twrite_ledit_filepath.setToolTip(_translate("MainWindow", "Файл для записи"))
-        self.tread_ledit_filepath.setToolTip(_translate("MainWindow", "Файл для чтения"))
+        self.twrite_ledit_filepath.setToolTip(
+            _translate("MainWindow", "Файл для записи"))
+        self.tread_ledit_filepath.setToolTip(
+            _translate("MainWindow", "Файл для чтения"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
 
-import ui_rc
 
 if __name__ == "__main__":
     import sys
@@ -716,4 +816,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

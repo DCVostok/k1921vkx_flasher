@@ -3,7 +3,7 @@
 
 import os
 import time
-import mcu
+import k1921vkx_flasher.mcu as mcu
 
 
 LogId = {
@@ -67,8 +67,7 @@ class Packet:
         self.cmd_code = CmdCode["NONE"]
         self.data8_n = 0
         self.data = []
-    
-    
+
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
@@ -140,7 +139,7 @@ class TxPacket(Packet):
 
 
 class RxPacket(Packet):
-    def __init__(self, mcu, serport, win=None,cur_flash=0,cur_region='region_main'):
+    def __init__(self, mcu, serport, win=None, cur_flash=0, cur_region='region_main'):
         super().__init__(mcu, serport, win)
         self.device_sign = SignCode["DEVICE"]
         self.rxcmd_code = CmdCode["NONE"]
@@ -149,7 +148,8 @@ class RxPacket(Packet):
         self.cur_region = cur_region
 
     def msg_err_crc(self):
-        self.log_dbg(LogId["DEVICE"] + "%s - ERR_CRC - CRC error in HOST command!" % dict_key(CmdCode, self.rxcmd_code))
+        self.log_dbg(LogId["DEVICE"] + "%s - ERR_CRC - CRC error in HOST command!" %
+                     dict_key(CmdCode, self.rxcmd_code))
         raise ProtException("ERR_CRC - CRC error in HOST command!", self.win)
 
     def parse_msg(self):
@@ -162,8 +162,10 @@ class RxPacket(Packet):
 
         if (self.rxcmd_code == CmdCode["NONE"]):
             if (self.msg_code == MsgCode["ERR_CMD"]):
-                self.log_dbg(LogId["DEVICE"] + "ERR_CMD - wrong command from HOST!")
-                raise ProtException("ERR_CMD - wrong command from HOST!", self.win)
+                self.log_dbg(LogId["DEVICE"] +
+                             "ERR_CMD - wrong command from HOST!")
+                raise ProtException(
+                    "ERR_CMD - wrong command from HOST!", self.win)
             elif (self.msg_code == MsgCode["READY"]):
                 result = "Device ask ready"
                 self.log_info(LogId["PROG"] + "%s" % result)
@@ -173,15 +175,19 @@ class RxPacket(Packet):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"]):
-                chipid = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
-                cpuid = (self.data[8] << 0) | (self.data[9] << 8) | (self.data[10] << 16) | (self.data[11] << 24)
-                bootver = (self.data[12] << 0) | (self.data[13] << 8) | (self.data[14] << 16) | (self.data[15] << 24)
+                chipid = (self.data[4] << 0) | (self.data[5] << 8) | (
+                    self.data[6] << 16) | (self.data[7] << 24)
+                cpuid = (self.data[8] << 0) | (self.data[9] << 8) | (
+                    self.data[10] << 16) | (self.data[11] << 24)
+                bootver = (self.data[12] << 0) | (self.data[13] << 8) | (
+                    self.data[14] << 16) | (self.data[15] << 24)
                 result = ("SIU.CHIPID=[0x%08x] SCB.CPUID=[0x%08x] BOOTVER=[0x%08x]" %
                           (chipid, cpuid, bootver))
 
                 info['chipid'] = "0x%08X" % chipid
                 info['cpuid'] = "0x%08X" % cpuid
-                info['bootver'] = "%d.%d" % ((bootver & 0xFFFF0000) >> 16, (bootver & 0x0000FFFF) >> 0)
+                info['bootver'] = "%d.%d" % (
+                    (bootver & 0xFFFF0000) >> 16, (bootver & 0x0000FFFF) >> 0)
                 self.log_info(LogId["PROG"] + result)
                 self.log_dbg(LogId["DEVICE"] + "GET_INFO - OK | %s" % result)
 
@@ -191,24 +197,27 @@ class RxPacket(Packet):
             elif (self.msg_code == MsgCode["OK"]):
                 info.update(self.mcu.parse_cfgword(self.data[4:]))
                 self.log_info(LogId["PROG"] + "%s" % info["res_str"])
-                self.log_dbg(LogId["DEVICE"] + "GET_CFGWORD - OK | %s" % info["res_str"])
+                self.log_dbg(LogId["DEVICE"] +
+                             "GET_CFGWORD - OK | %s" % info["res_str"])
             elif (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Device return error msg!", self.win)
+                raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["SET_CFGWORD"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"]):
                 info.update(self.mcu.parse_cfgword(self.data[4:]))
-                self.log_dbg(LogId["DEVICE"] + "SET_CFGWORD - OK | %s" % info["res_str"])
+                self.log_dbg(LogId["DEVICE"] +
+                             "SET_CFGWORD - OK | %s" % info["res_str"])
             elif (self.msg_code == MsgCode["FAIL"]):
-                    raise ProtException("Device return error msg!", self.win)
+                raise ProtException("Device return error msg!", self.win)
 
         elif (self.rxcmd_code == CmdCode["WRITE_PAGE"]):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"] or self.msg_code == MsgCode["FAIL"]):
-                temp = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
+                temp = (self.data[4] << 0) | (self.data[5] << 8) | (
+                    self.data[6] << 16) | (self.data[7] << 24)
                 self.log_dbg(LogId["DEVICE"] + "WRITE_PAGE - %s | NVR=[%01d] FLASH=[%01d] ERASE=[%01d] ADDR=[0x%08x] PAGE=[%0d]" %
                              (dict_key(MsgCode, self.msg_code),
                              ((temp >> 31) & 0x1), ((temp >> 29) & 0x1), ((temp >> 30) & 0x1), (temp & 0x3FFFFFFF), (temp & 0x3FFFFFFF) // flash_page_size))
@@ -219,7 +228,8 @@ class RxPacket(Packet):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"] or self.msg_code == MsgCode["FAIL"]):
-                temp = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
+                temp = (self.data[4] << 0) | (self.data[5] << 8) | (
+                    self.data[6] << 16) | (self.data[7] << 24)
                 info['data'] = self.data[8:]
                 self.log_dbg(LogId["DEVICE"] + "READ_PAGE - %s | NVR=[%01d] FLASH=[%01d] ADDR=[0x%08x] PAGE=[%0d]" %
                              (dict_key(MsgCode, self.msg_code),
@@ -231,8 +241,10 @@ class RxPacket(Packet):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"] or self.msg_code == MsgCode["FAIL"]):
-                temp = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
-                self.log_dbg(LogId["DEVICE"] + "ERASE_FULL - %s | NVR=[%01d] FLASH=[%01d]" % (dict_key(MsgCode, self.msg_code), ((temp >> 31) & 0x1), ((temp >> 29) & 0x1)))
+                temp = (self.data[4] << 0) | (self.data[5] << 8) | (
+                    self.data[6] << 16) | (self.data[7] << 24)
+                self.log_dbg(LogId["DEVICE"] + "ERASE_FULL - %s | NVR=[%01d] FLASH=[%01d]" % (
+                    dict_key(MsgCode, self.msg_code), ((temp >> 31) & 0x1), ((temp >> 29) & 0x1)))
                 if (self.msg_code == MsgCode["FAIL"]):
                     raise ProtException("Device return error msg!", self.win)
 
@@ -240,7 +252,8 @@ class RxPacket(Packet):
             if (self.msg_code == MsgCode["ERR_CRC"]):
                 self.msg_err_crc()
             elif (self.msg_code == MsgCode["OK"] or self.msg_code == MsgCode["FAIL"]):
-                temp = (self.data[4] << 0) | (self.data[5] << 8) | (self.data[6] << 16) | (self.data[7] << 24)
+                temp = (self.data[4] << 0) | (self.data[5] << 8) | (
+                    self.data[6] << 16) | (self.data[7] << 24)
                 self.log_dbg(LogId["DEVICE"] + "ERASE_PAGE - %s | NVR=[%01d] FLASH=[%01d] ADDR=[0x%08x] PAGE=[%0d]" %
                              (dict_key(MsgCode, self.msg_code),
                              ((temp >> 31) & 0x1), ((temp >> 29) & 0x1), (temp & 0x7FFFFFFF), (temp & 0x7FFFFFFF) // flash_page_size))
@@ -261,7 +274,8 @@ class RxPacket(Packet):
                 n += 1
             self.log_dbg(temp_str)
             if n > 63:
-                self.log_dbg('More than 64 bytes of data, the rest are not printed')
+                self.log_dbg(
+                    'More than 64 bytes of data, the rest are not printed')
                 break
 
         return info
@@ -278,7 +292,8 @@ class RxPacket(Packet):
         rx_data_n = self.serport.read_int(2)
         # check command
         if ((rx_cmd ^ rx_cmd_inv) != 0xFF):
-            self.log_dbg(LogId["HOST"] + "MSG_CMD - ERR_CMD - wrong command from DEVICE!")
+            self.log_dbg(
+                LogId["HOST"] + "MSG_CMD - ERR_CMD - wrong command from DEVICE!")
             raise ProtException("Wrong command received!", self.win)
         # start data load and crc16 calculation
         crc = self.crc16(rx_cmd)
@@ -294,22 +309,25 @@ class RxPacket(Packet):
             self.cmd_code = rx_cmd
             self.data8_n = rx_data_n
             if (self.cmd_code == CmdCode["MSG"]):
-                    return self.parse_msg()
+                return self.parse_msg()
             else:
-                self.log_dbg(LogId["HOST"] + "Error! Waiting for MSG but recieve %s command" % dict_key(CmdCode, self.cmd_code))
+                self.log_dbg(LogId["HOST"] + "Error! Waiting for MSG but recieve %s command" %
+                             dict_key(CmdCode, self.cmd_code))
                 raise ProtException("Wrong command received!", self.win)
         else:
-            self.log_dbg(LogId["HOST"] + "MSG - ERR_CRC - CRC error in DEVICE command!")
+            self.log_dbg(LogId["HOST"] +
+                         "MSG - ERR_CRC - CRC error in DEVICE command!")
             raise ProtException("CRC error in device message!", self.win)
 
 
 class CmdInterface:
-    def __init__(self, mcu, serport, win=None,cur_flash=0,cur_region="region_main"):
+    def __init__(self, mcu, serport, win=None, cur_flash=0, cur_region="region_main"):
         self.mcu = mcu
         self.serport = serport
         self.win = win
         self.cur_flash = cur_flash
         self.cur_region = cur_region
+
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
@@ -359,13 +377,15 @@ class CmdInterface:
             ack = self.serport.read_int(2)
             self.log_info(LogId["DEVICE"] + "ack = 0x%04X" % ack)
             if (ack == ((((SignCode["DEVICE"]) >> 8) & 0x00FF) | (((SignCode["DEVICE"]) << 8) & 0xFF00))):
-                 self.log_info(LogId["PROG"] + "Device connected")
+                self.log_info(LogId["PROG"] + "Device connected")
             else:
-                raise ProtException("Unknown response from the device", self.win)
+                raise ProtException(
+                    "Unknown response from the device", self.win)
         self.serport.rts = not self.serport.rts
         rx_info = self.cmd_msg()
         if ((rx_info['cmd_code'] != CmdCode["NONE"]) or (rx_info['msg_code'] != MsgCode["READY"])):
-            raise ProtException("Unknown READY response from the device", self.win)
+            raise ProtException(
+                "Unknown READY response from the device", self.win)
 
     def release_device(self):
         self.log_info(LogId["PROG"] + "Disconnecting from target ...")
@@ -432,7 +452,8 @@ class CmdInterface:
         packet.data += [(0 >> 16) & 0xFF]
         nvr = 1 if 'nvr' in region else 0
         packet.data += [((nvr << 7) | (flash << 5)) & 0xFF]
-        self.log_dbg(LogId["HOST"] + "ERASE_FULL - NVR=[%01d] FLASH=[%01d]" % (nvr, flash))
+        self.log_dbg(
+            LogId["HOST"] + "ERASE_FULL - NVR=[%01d] FLASH=[%01d]" % (nvr, flash))
         packet.transmit()
 
     def cmd_write_page(self, page, page_data, flash, region, erpages):
@@ -470,7 +491,8 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_exit_bootloader(self):
-        self.log_info(LogId["PROG"] + "Software reset and exit from bootloader")
+        self.log_info(LogId["PROG"] +
+                      "Software reset and exit from bootloader")
         packet = TxPacket(self.mcu, self.serport, self.win)
         packet.cmd_code = CmdCode["EXIT_BOOTLOADER"]
         packet.data8_n = 0
@@ -478,7 +500,8 @@ class CmdInterface:
         packet.transmit()
 
     def cmd_msg(self):
-        packet = RxPacket(self.mcu, self.serport, self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        packet = RxPacket(self.mcu, self.serport, self.win,
+                          cur_flash=self.cur_flash, cur_region=self.cur_region)
         return packet.receive()
 
 
@@ -489,10 +512,12 @@ class Protocol:
         self.win = win
         self.cur_flash = 0
         self.cur_region = "region_main"
+
     def pbar_set(self, state):
         if self.win:
             self.win.pbar_set(state)
     # -- Helpers --
+
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
@@ -532,12 +557,15 @@ class Protocol:
     # -- API --
     def init(self, **kwargs):
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        # self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         try:
-            self.serport.open_port(port=kwargs['port'], baudrate=kwargs['baud'])
+            self.serport.open_port(
+                port=kwargs['port'], baudrate=kwargs['baud'])
         except:
-            raise ProtException("Couldn't open port %s"%(kwargs['port']), self.win)
+            raise ProtException("Couldn't open port %s" %
+                                (kwargs['port']), self.win)
         self.serport.reset_input_buffer()
         self.pbar_set(25)
         cmd.init_device()
@@ -554,18 +582,20 @@ class Protocol:
         self.mcu.apply_cfgword(mcu_cfgword)
         self.mcu.cpuid = mcu_info['cpuid']
         self.mcu.bootver = mcu_info['bootver']
-        self.log_info("Detected %s with bootloader v%s" % (self.mcu.name_ru, self.mcu.bootver))
+        self.log_info("Detected %s with bootloader v%s" %
+                      (self.mcu.name_ru, self.mcu.bootver))
         self.pbar_set(100)
         return self.mcu
 
     def deinit(self, **kwargs):
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        # self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         if self.win:
             self.pbar_set(50)
         cmd.release_device()
-        #self.serport.close_port()
+        # self.serport.close_port()
         self.log_info("Disconnect from target")
         if self.win:
             self.pbar_set(100)
@@ -574,7 +604,7 @@ class Protocol:
     def write(self, **kwargs):
         self.serport.reset_input_buffer()
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
+        # self.log_dbg(kwargs)
 
         if "region" in kwargs:
             self.cur_region = kwargs["region"]
@@ -585,9 +615,9 @@ class Protocol:
         else:
             self.cur_flash = self.win.get_curr_flash()
 
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
-        
-            
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
+
         region = self.cur_region
         flash = self.cur_flash
         page_size = self.mcu.flash[flash][region].page_size
@@ -596,14 +626,17 @@ class Protocol:
             pages_total = self.mcu.flash[flash][region].pages
             addr = kwargs['firstpage'] * page_size
             if filesize > ((page_size * pages_total) - addr):
-                raise ProtException("Filesize more then mcu flash size!", self.win)
-            count_pages = ((filesize // page_size) + (1 if filesize % page_size else 0))
+                raise ProtException(
+                    "Filesize more then mcu flash size!", self.win)
+            count_pages = ((filesize // page_size) +
+                           (1 if filesize % page_size else 0))
         else:
             count_pages = kwargs['count_pages']
 
         lastpage = kwargs['firstpage'] + count_pages - 1
         raw_data = self.open_bin(kwargs['filepath'])
-        self.log_info("Completing a binary file to the size of an entire page...")
+        self.log_info(
+            "Completing a binary file to the size of an entire page...")
         data = [0xFF] * (lastpage - kwargs['firstpage'] + 1) * page_size
         for i in range(0, len(raw_data)):
             data[i] = raw_data[i]
@@ -617,10 +650,12 @@ class Protocol:
         state += 20.0
         self.pbar_set(state)
 
-        self.log_info("Write pages %s:" % (" with pre-erasing" if kwargs['erpages'] else ""))
+        self.log_info("Write pages %s:" %
+                      (" with pre-erasing" if kwargs['erpages'] else ""))
         for p in range(0, lastpage - kwargs['firstpage'] + 1):
-            cmd.cmd_write_page(kwargs['firstpage'] + p, data[p * page_size:p * page_size + page_size], flash, region, kwargs['erpages'])
-            state += 15 / (lastpage- kwargs['firstpage'] + 1)
+            cmd.cmd_write_page(kwargs['firstpage'] + p, data[p * page_size:p *
+                               page_size + page_size], flash, region, kwargs['erpages'])
+            state += 15 / (lastpage - kwargs['firstpage'] + 1)
             self.pbar_set(state)
             cmd_count += 1
 
@@ -634,14 +669,14 @@ class Protocol:
             self.log_info("Verification ...")
             # read pages
             read_data = []
-            for p in range(kwargs['firstpage'], lastpage+ 1):
+            for p in range(kwargs['firstpage'], lastpage + 1):
                 cmd.cmd_read_page(p, flash, region)
-                state += 15 / (lastpage- kwargs['firstpage'] + 1)
+                state += 15 / (lastpage - kwargs['firstpage'] + 1)
                 self.pbar_set(state)
             self.log_info("Waiting for completing commands ...")
-            for p in range(kwargs['firstpage'], lastpage+ 1):
+            for p in range(kwargs['firstpage'], lastpage + 1):
                 read_data += cmd.cmd_msg()['data']
-                state += 20 / (lastpage- kwargs['firstpage'] + 1)
+                state += 20 / (lastpage - kwargs['firstpage'] + 1)
                 self.pbar_set(state)
             # compare
             err = 0
@@ -650,17 +685,20 @@ class Protocol:
                 if (read_data[i] != data[i]):
                     err += 1
                     if err_limit > 0:
-                        self.log_err("Addr 0%08X, writed 0x%02X, but readed 0x%02X" % (i, data[i], read_data[i]), msgbox_en=False)
+                        self.log_err("Addr 0%08X, writed 0x%02X, but readed 0x%02X" % (
+                            i, data[i], read_data[i]), msgbox_en=False)
                         err_limit -= 1
                         if err_limit == 0:
-                            self.log_err("Only the first 16 verification errors are shown.")
-            self.log_info("Verification completed, number of errors: %0d" % err)
+                            self.log_err(
+                                "Only the first 16 verification errors are shown.")
+            self.log_info(
+                "Verification completed, number of errors: %0d" % err)
         self.pbar_set(100)
 
     def erase(self, **kwargs):
         self.serport.reset_input_buffer()
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
+        # self.log_dbg(kwargs)
         if "region" in kwargs:
             self.cur_region = kwargs["region"]
         else:
@@ -669,7 +707,8 @@ class Protocol:
             self.cur_flash = kwargs["flash"]
         else:
             self.cur_flash = self.win.get_curr_flash()
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
 
@@ -696,7 +735,7 @@ class Protocol:
     def read(self, **kwargs):
         self.serport.reset_input_buffer()
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
+        # self.log_dbg(kwargs)
         if "region" in kwargs:
             self.cur_region = kwargs["region"]
         else:
@@ -706,7 +745,8 @@ class Protocol:
         else:
             self.cur_flash = self.win.get_curr_flash()
 
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
 
@@ -728,8 +768,9 @@ class Protocol:
     def get_cfgword(self, **kwargs):
         self.serport.reset_input_buffer()
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        # self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         self.pbar_set(50)
         cfgword = cmd.cmd_get_cfgword()
         self.pbar_set(100)
@@ -738,8 +779,9 @@ class Protocol:
     def set_cfgword(self, **kwargs):
         self.serport.reset_input_buffer()
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
-        #self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,cur_flash=self.cur_flash,cur_region=self.cur_region)
+        # self.log_dbg(kwargs)
+        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+                           cur_flash=self.cur_flash, cur_region=self.cur_region)
         self.pbar_set(50)
         cmd.cmd_set_cfgword(kwargs['cfgword'])
         self.pbar_set(100)
