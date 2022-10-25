@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 from os.path import join, dirname
 from setuptools import Command
 import os
+import k1921vkx_flasher
 
 
 class build_app(Command):
@@ -36,7 +37,7 @@ class build_app(Command):
 
 setup(
     name='k1921vkx_flasher',
-    version='1.1',
+    version=k1921vkx_flasher.__version__,
     cmdclass={
         'build_app': build_app,
     },
