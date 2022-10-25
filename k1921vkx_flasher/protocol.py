@@ -60,10 +60,11 @@ class ProtException(Exception):
 
 
 class Packet:
-    def __init__(self, mcu, serport, win=None):
+    def __init__(self, mcu, serport,debug_log=False, win=None):
         self.mcu = mcu
         self.serport = serport
         self.win = win
+        self.debug_log = debug_log
         self.cmd_code = CmdCode["NONE"]
         self.data8_n = 0
         self.data = []
@@ -71,7 +72,7 @@ class Packet:
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
-        else:
+        elif self.debug_log:
             print("DBG: %s" % msg)
 
     def log_info(self, msg):
@@ -181,9 +182,11 @@ class RxPacket(Packet):
                     self.data[10] << 16) | (self.data[11] << 24)
                 bootver = (self.data[12] << 0) | (self.data[13] << 8) | (
                     self.data[14] << 16) | (self.data[15] << 24)
-                result = ("SIU.CHIPID=[0x%08x] SCB.CPUID=[0x%08x] BOOTVER=[0x%08x]" %
-                          (chipid, cpuid, bootver))
+                bootname = bytes(self.data[15:]).decode()
+                result = ("BOOTNAME=[%s] SIU.CHIPID=[0x%08x] SCB.CPUID=[0x%08x] BOOTVER=[0x%08x]" %
+                          (bootname,chipid, cpuid, bootver))
 
+                info['bootname'] = bootname
                 info['chipid'] = "0x%08X" % chipid
                 info['cpuid'] = "0x%08X" % cpuid
                 info['bootver'] = "%d.%d" % (
@@ -321,10 +324,11 @@ class RxPacket(Packet):
 
 
 class CmdInterface:
-    def __init__(self, mcu, serport, win=None, cur_flash=0, cur_region="region_main"):
+    def __init__(self, mcu, serport, debug_log=False, win=None, cur_flash=0, cur_region="region_main"):
         self.mcu = mcu
         self.serport = serport
         self.win = win
+        self.debug_log = debug_log
         self.cur_flash = cur_flash
         self.cur_region = cur_region
 
@@ -337,7 +341,7 @@ class CmdInterface:
     def log_info(self, msg):
         if self.win:
             self.win.log_info(msg)
-        else:
+        elif self.debug_log:
             print(u"INFO: %s" % msg)
 
     def log_err(self, msg, msgbox_en=True):
@@ -506,10 +510,11 @@ class CmdInterface:
 
 
 class Protocol:
-    def __init__(self, serport, win=None):
+    def __init__(self, serport, debug_log=False, win=None):
         self.mcu = mcu.get_by_name('k1921vkx')
         self.serport = serport
         self.win = win
+        self.debug_log = debug_log
         self.cur_flash = 0
         self.cur_region = "region_main"
 
@@ -521,7 +526,7 @@ class Protocol:
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
-        else:
+        elif self.debug_log:
             print("DBG: %s" % msg)
 
     def log_info(self, msg):
