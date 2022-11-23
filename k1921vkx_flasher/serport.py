@@ -29,7 +29,7 @@ class SerPort(serial.Serial):
         else:
             print("ERR: %s" % msg)
 
-    def open_port(self, port='/dev/ttyUSB0', baudrate=115200, quiet=False):
+    def open_port(self, port='/dev/ttyUSB0', baudrate=115200, quiet=True):
         if self.is_open:
             self.close()
         self.port = port
@@ -41,7 +41,7 @@ class SerPort(serial.Serial):
             self.log_info("Try open port %s %s" % (port, baudrate))
         self.open()
 
-    def close_port(self, quiet=False):
+    def close_port(self, quiet=True):
         if not quiet:
             self.log_info("COM port closed")
         self.close()
