@@ -627,7 +627,7 @@ class Protocol:
         region = self.cur_region
         flash = self.cur_flash
         page_size = self.mcu.flash[flash][region].page_size
-        if kwargs['count_pages'] is None:
+        if ('count_pages' in  kwargs) and (kwargs['count_pages'] is None):
             filesize = os.path.getsize(kwargs['filepath'])
             pages_total = self.mcu.flash[flash][region].pages
             addr = kwargs['firstpage'] * page_size
@@ -717,7 +717,7 @@ class Protocol:
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
-        if kwargs['count_pages'] is None:
+        if ('count_pages' in  kwargs) and (kwargs['count_pages'] is None):
             count_pages = self.mcu.flash[flash][region].pages
         else:
             count_pages = kwargs['count_pages']
@@ -761,7 +761,7 @@ class Protocol:
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
-        if kwargs. kwargs['count_pages'] is None:
+        if ('count_pages' in kwargs) and (kwargs['count_pages'] is None):
             count_pages = self.mcu.flash[flash][region].pages
         else:
             count_pages = kwargs['count_pages']
