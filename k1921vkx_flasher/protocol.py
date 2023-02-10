@@ -335,7 +335,7 @@ class CmdInterface:
     def log_dbg(self, msg):
         if self.win:
             self.win.log_dbg(msg)
-        else:
+        elif self.debug_log:
             print("DBG: %s" % msg)
 
     def log_info(self, msg):
@@ -517,6 +517,7 @@ class Protocol:
         self.debug_log = debug_log
         self.cur_flash = 0
         self.cur_region = "region_main"
+        self.mcu_cfgword = None
 
     def pbar_set(self, state):
         if self.win:
@@ -563,7 +564,7 @@ class Protocol:
     def init(self, **kwargs):
         #self.log_dbg("%s->%s()" % (os.path.basename(__file__), self.win.whoami()))
         # self.log_dbg(kwargs)
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+        cmd = CmdInterface(mcu=self.mcu,debug_log=self.debug_log, serport=self.serport, win=self.win,
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
         try:
             self.serport.open_port(
@@ -583,8 +584,8 @@ class Protocol:
             self.mcu = inited_mcu
             cmd.mcu = self.mcu
         self.pbar_set(75)
-        mcu_cfgword = cmd.cmd_get_cfgword()
-        self.mcu.apply_cfgword(mcu_cfgword)
+        self.mcu_cfgword = cmd.cmd_get_cfgword()
+        self.mcu.apply_cfgword(self.mcu_cfgword)
         self.mcu.cpuid = mcu_info['cpuid']
         self.mcu.bootver = mcu_info['bootver']
         self.log_info("Detected %s with bootloader v%s" %
@@ -620,7 +621,7 @@ class Protocol:
         else:
             self.cur_flash = self.win.get_curr_flash()
 
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+        cmd = CmdInterface(mcu=self.mcu,debug_log=self.debug_log, serport=self.serport, win=self.win,
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
 
         region = self.cur_region
@@ -641,7 +642,7 @@ class Protocol:
         lastpage = kwargs['firstpage'] + count_pages - 1
         raw_data = self.open_bin(kwargs['filepath'])
         self.log_info(
-            "Completing a binary file to the size of an entire page...")
+            "Binary size %d"%(filesize))
         data = [0xFF] * (lastpage - kwargs['firstpage'] + 1) * page_size
         for i in range(0, len(raw_data)):
             data[i] = raw_data[i]
@@ -655,7 +656,7 @@ class Protocol:
         state += 20.0
         self.pbar_set(state)
 
-        self.log_info("Write pages %s:" %
+        self.log_info("Write pages %s..." %
                       (" with pre-erasing" if kwargs['erpages'] else ""))
         for p in range(0, lastpage - kwargs['firstpage'] + 1):
             cmd.cmd_write_page(kwargs['firstpage'] + p, data[p * page_size:p *
@@ -712,10 +713,16 @@ class Protocol:
             self.cur_flash = kwargs["flash"]
         else:
             self.cur_flash = self.win.get_curr_flash()
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+        cmd = CmdInterface(mcu=self.mcu,debug_log=self.debug_log, serport=self.serport, win=self.win,
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
+        if kwargs['count_pages'] is None:
+            count_pages = self.mcu.flash[flash][region].pages
+        else:
+            count_pages = kwargs['count_pages']
+
+        lastpage = kwargs['firstpage'] + count_pages - 1
 
         cmd_count = 0
         state = 0.0
@@ -730,7 +737,7 @@ class Protocol:
                 state += 50 / (lastpage - kwargs['firstpage'] + 1)
                 self.pbar_set(state)
                 cmd_count += 1
-            self.log_info("Ожидание выполнения команд ...")
+            self.log_info("Waiting for completing commands ...")
             for i in range(0, cmd_count):
                 cmd.cmd_msg()
                 state += 50 / cmd_count
@@ -750,10 +757,16 @@ class Protocol:
         else:
             self.cur_flash = self.win.get_curr_flash()
 
-        cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
+        cmd = CmdInterface(mcu=self.mcu,debug_log=self.debug_log, serport=self.serport, win=self.win,
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
         region = self.cur_region
         flash = self.cur_flash
+        if kwargs. kwargs['count_pages'] is None:
+            count_pages = self.mcu.flash[flash][region].pages
+        else:
+            count_pages = kwargs['count_pages']
+        self.log_info("Read %d pages ..."%(count_pages))
+        lastpage = kwargs['firstpage'] + count_pages - 1
 
         page_data = []
         state = 10.0
@@ -762,7 +775,7 @@ class Protocol:
             cmd.cmd_read_page(page, flash, region)
             state += 40 / (lastpage - kwargs['firstpage'] + 1)
             self.pbar_set(state)
-        self.log_info("Ожидание выполнения команд ...")
+        self.log_info("Waiting for completing commands ...")
         for page in range(kwargs['firstpage'], lastpage + 1):
             page_data += cmd.cmd_msg()['data']
             state += 40 / (lastpage - kwargs['firstpage'] + 1)
@@ -787,6 +800,9 @@ class Protocol:
         # self.log_dbg(kwargs)
         cmd = CmdInterface(mcu=self.mcu, serport=self.serport, win=self.win,
                            cur_flash=self.cur_flash, cur_region=self.cur_region)
+        new_cfgword = self.mcu_cfgword
+        for k,v in kwargs['cfgword'].items():
+            new_cfgword[k] = int(v)
         self.pbar_set(50)
-        cmd.cmd_set_cfgword(kwargs['cfgword'])
+        cmd.cmd_set_cfgword(new_cfgword)
         self.pbar_set(100)
