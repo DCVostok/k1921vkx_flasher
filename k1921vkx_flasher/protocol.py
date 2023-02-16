@@ -13,8 +13,8 @@ LogId = {
 }
 
 SignCode = {
-    "DEVICE": 0x7EA3,
-    "HOST": 0x5C81,
+    "DEVICE": b'\xa3\x7e',
+    "HOST": b'\x81\x5c',
 }
 
 CmdCode = {
@@ -113,8 +113,8 @@ class TxPacket(Packet):
 
     def transmit(self):
         packet_bytes = []
-        packet_bytes += [(self.host_sign >> 0) & 0xFF]
-        packet_bytes += [(self.host_sign >> 8) & 0xFF]
+        packet_bytes += [self.host_sign[0]]
+        packet_bytes += [self.host_sign[1]]
 
         packet_bytes += [(self.cmd_code >> 0) & 0xFF]
         crc = self.crc16(self.cmd_code)
@@ -285,10 +285,9 @@ class RxPacket(Packet):
 
     def receive(self):
         # device signature detection
-        rx_sign = 0
-        while (rx_sign != self.device_sign):
-            temp = self.serport.read_int()
-            rx_sign = (rx_sign >> 8) | (temp << 8)
+        rx_sign = self.serport.read_until(self.device_sign)
+        if not (self.device_sign in rx_sign):
+            raise ProtException("receive timeout", self.win)
         # read special data
         rx_cmd = self.serport.read_int()
         rx_cmd_inv = self.serport.read_int()
@@ -360,31 +359,34 @@ class CmdInterface:
         time.sleep(0.01)
 
     def init_device(self):
-        self.log_info(LogId["PROG"] + "Connecting ro target ...")
+        self.log_info(LogId["PROG"] + "Connecting to target ...")
         # try RTS active 1
         self.log_info(LogId["PROG"] + "Activate loader: variant 1 ....")
+        SignCode_device_b = SignCode["DEVICE"][::-1] #reverse
         self.serport.reset_input_buffer()
-        self.serport.rts = False
+        self.serport.rts = True
         self.reset_chip()
+        self.serport.reset_input_buffer()
         self.serport.write_bytes([0x7F])
-        ack = self.serport.read_int(2)
-        self.log_info(LogId["DEVICE"] + "ack = 0x%04X" % ack)
-        if (ack == ((((SignCode["DEVICE"]) >> 8) & 0x00FF) | (((SignCode["DEVICE"]) << 8) & 0xFF00))):
+        ack = self.serport.read_until(SignCode_device_b)
+        self.log_info(LogId["DEVICE"] + "ack = %s, SignCode_device_b= %s" % (ack.hex(),SignCode_device_b.hex()))
+        if (SignCode_device_b in ack):
             self.log_info(LogId["PROG"] + "Device connected")
         else:
             # try RTS active 0
             self.log_info(LogId["PROG"] + "Activate loader: variant 2 ....")
             self.serport.reset_input_buffer()
-            self.serport.rts = True
+            self.serport.rts = False
             self.reset_chip()
+            self.serport.reset_input_buffer()
             self.serport.write_bytes([0x7F])
-            ack = self.serport.read_int(2)
-            self.log_info(LogId["DEVICE"] + "ack = 0x%04X" % ack)
-            if (ack == ((((SignCode["DEVICE"]) >> 8) & 0x00FF) | (((SignCode["DEVICE"]) << 8) & 0xFF00))):
+            ack = self.serport.read_until(SignCode_device_b)
+            self.log_info(LogId["DEVICE"] + "ack = %s, SignCode_device_b= %s" % (ack.hex(),SignCode_device_b.hex()))
+            if (SignCode_device_b in ack):
                 self.log_info(LogId["PROG"] + "Device connected")
             else:
                 raise ProtException(
-                    "Unknown response from the device", self.win)
+                    "Unknown response from the device ack = %s"%(ack.hex()), self.win)
         self.serport.rts = not self.serport.rts
         rx_info = self.cmd_msg()
         if ((rx_info['cmd_code'] != CmdCode["NONE"]) or (rx_info['msg_code'] != MsgCode["READY"])):
