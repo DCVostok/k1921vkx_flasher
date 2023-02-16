@@ -589,7 +589,7 @@ class Protocol:
         self.mcu.cpuid = mcu_info['cpuid']
         self.mcu.bootver = mcu_info['bootver']
         self.log_info("Detected %s with bootloader v%s" %
-                      (self.mcu.name_ru, self.mcu.bootver))
+                      (self.mcu.name, self.mcu.bootver))
         self.pbar_set(100)
         return self.mcu
 

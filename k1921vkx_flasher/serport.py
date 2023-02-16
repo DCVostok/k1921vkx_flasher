@@ -70,7 +70,7 @@ class SerPort(serial.Serial):
         elif sys.platform.startswith('darwin'):
             ports = glob.glob('/dev/tty.*')
         else:
-            self.log_err("Невозможно открыть порты - неподдерживаемая платформа")
+            self.log_err("It is impossible to open the ports - unsupported platform")
             raise EnvironmentError('Unsupported platform')
 
         result = []

@@ -28,7 +28,7 @@ def cmd_exec(args):
     except:
         #print(" Сouldn't connect to the target")
         prot.deinit()
-        raise Exception("Сouldn't connect to the target")
+        raise Exception("Couldn't connect to the target")
     
     try:
 
