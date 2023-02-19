@@ -1,4 +1,5 @@
-# k1921vk_flasher tool
+# k1921vk flasher tool
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/dcvostok/tool/tool-k1921vkx-flasher.svg)](https://registry.platformio.org/tools/dcvostok/tool-k1921vkx-flasher)
 A Python-based, platform-independent utility to communicate with the bootloader in k1921vk chips.
 
 # Install 
