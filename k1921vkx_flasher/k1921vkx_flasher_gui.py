@@ -30,9 +30,10 @@ from k1921vkx_flasher.ui_config028 import Ui_Config028
 from k1921vkx_flasher.ui_config01t import Ui_Config01T
 from k1921vkx_flasher.ui_config1921 import Ui_Config1921
 
+import k1921vkx_flasher
 
 # -- Global variables ---------------------------------------------------------
-VERSION = "1.2"
+VERSION = k1921vkx_flasher.__version__
 
 
 # -- Misc functions -----------------------------------------------------------
