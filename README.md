@@ -84,6 +84,12 @@ k1921vkx_flasher -c -p COM6 -b 460800 --set_cfgword FLASHRE=1,NVRRE=1,JTAGEN=1,D
 # Building app
 
 Run cmd:
+Install dependencies
 ```
-python setup.py build_app
+python setup.py egg_info
+pip install -r k1921vkx_flasher.egg-info/requires.txt 
+```
+Build
+```
+pyinstaller k1921vkx_flasher.spec
 ```
