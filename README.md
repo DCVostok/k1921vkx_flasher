@@ -93,3 +93,19 @@ Build
 ```
 pyinstaller k1921vkx_flasher.spec
 ```
+# Building app with Windows 7 support
+Create conda environment
+```
+conda create -y -n k1921vkx_flasher python=3.7
+conda activate k1921vkx_flasher
+pip install pyinstaller==5.8.0
+```
+Install dependencies
+```
+python setup.py egg_info
+pip install -r k1921vkx_flasher.egg-info/requires.txt 
+```
+Build
+```
+pyinstaller k1921vkx_flasher.spec
+```
