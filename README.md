@@ -3,9 +3,19 @@
 A Python-based, platform-independent utility to communicate with the bootloader in k1921vk chips.
 
 # Install 
+
+With GUI:
 ```
-python setup.py install
+pip install "k1921vkx_flasher[GUI] @ git+https://github.com/DCVostok/k1921vkx_flasher.git"
 ```
+
+Without GUI:
+```
+pip install "k1921vkx_flasher @ git+https://github.com/DCVostok/k1921vkx_flasher.git"
+```
+
+To use this tool without GUI, you need to pass `--cmd_mode` when running commands.
+
 # Usage
 You can run tool by:
 1. From repo folder
@@ -15,6 +25,10 @@ python k1921vkx_flasher.py
 2. By entry_point
 ```
 k1921vkx_flasher
+```
+3. As Python module
+```
+python -m k1921vkx_flasher
 ```
 
 ```
