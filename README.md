@@ -17,16 +17,12 @@ pip install "k1921vkx_flasher @ git+https://github.com/DCVostok/k1921vkx_flasher
 To use this tool without GUI, you need to pass `--cmd_mode` when running commands.
 
 # Usage
-You can run tool by:
-1. From repo folder
-```
-python k1921vkx_flasher.py
-```
-2. By entry_point
+You can run tool with
 ```
 k1921vkx_flasher
 ```
-3. As Python module
+
+or as a python Module
 ```
 python -m k1921vkx_flasher
 ```
